@@ -27,7 +27,24 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
-#    - run: npm install
+    - run: |
+        echo "GITHUB_BASE_REF=$GITHUB_BASE_REF"
+        echo "GITHUB_REF=$GITHUB_REF"
+        echo "GITHUB_REF_NAME=$GITHUB_REF_NAME"
+        echo "GITHUB_REPOSITORY=$GITHUB_REPOSITORY"
+        echo "GITHUB_REPOSITORY_OWNER=$GITHUB_REPOSITORY_OWNER"
+        echo "GITHUB_SHA=$GITHUB_SHA"
+        echo "GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }}"
+        echo "this workflow was triggered by: $GITHUB_ACTOR"
+        echo "this workflow was triggered by this event: $GITHUB_EVENT_NAME"
+        echo "the event payload is:"
+        cat $GITHUB_EVENT_PATH
+    - name: condition 1
+      if: runner.os == 'Windows'
+      run: echo "The operating system on the runner is $env:RUNNER_OS."
+    - name: condition 2
+      if: runner.os != 'Windows'
+      run: echo "The operating system on the runner is not Windows, it's $RUNNER_OS."
     - run: npm ci
     - run: npm run build --if-present
     - run: npm test
